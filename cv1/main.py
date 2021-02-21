@@ -33,7 +33,7 @@ adj_matrix_combination = radius_knn_combination(distance_matrix, EPSILON, K)
 
 G_radius = nx.from_numpy_matrix(adj_matrix_radius)
 G_knn = nx.from_numpy_matrix(adj_matrix_knn)
-G_combination = nx.from_numpy_matrix(adj_matrix_knn)
+G_combination = nx.from_numpy_matrix(adj_matrix_combination)
 # nx.set_node_attributes(G, network_labels)
 
 # nx.draw(G_radius, with_labels=False)

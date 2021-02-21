@@ -20,6 +20,8 @@ def radius_based_logic(adj_matrix, distance_matrix, epsilon):
     size = len(distance_matrix)
     for y in range(size):
         for x in range(size):
+            if y == x:
+                continue
             if distance_matrix[y][x] < epsilon:
                 adj_matrix[y][x] = 1
     return adj_matrix

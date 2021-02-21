@@ -20,6 +20,8 @@ def nearest_neightbors(distance_matrix, k, verbose=False):
 def nearest_neighbors_logic(adj_matrix, distance_matrix, k):
     for node_index, node in enumerate(distance_matrix):
         indicies = np.argsort(node)[1:k+1]
-        for s_i in indicies: 
+        for s_i in indicies:
+            if s_i == node_index:
+                continue
             adj_matrix[node_index][s_i] = 1
     return adj_matrix

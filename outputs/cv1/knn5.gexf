@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
-  <meta lastmodifieddate="2021-02-16">
+  <meta lastmodifieddate="2021-02-21">
     <creator>NetworkX 2.5</creator>
   </meta>
   <graph defaultedgetype="undirected" mode="static" name="">
@@ -663,11 +663,10 @@
       <edge source="140" target="148" id="503" weight="1.0" />
       <edge source="141" target="145" id="504" weight="1.0" />
       <edge source="141" target="147" id="505" weight="1.0" />
-      <edge source="142" target="142" id="506" weight="1.0" />
-      <edge source="142" target="149" id="507" weight="1.0" />
-      <edge source="143" target="144" id="508" weight="1.0" />
-      <edge source="145" target="147" id="509" weight="1.0" />
-      <edge source="147" target="148" id="510" weight="1.0" />
+      <edge source="142" target="149" id="506" weight="1.0" />
+      <edge source="143" target="144" id="507" weight="1.0" />
+      <edge source="145" target="147" id="508" weight="1.0" />
+      <edge source="147" target="148" id="509" weight="1.0" />
     </edges>
   </graph>
 </gexf>

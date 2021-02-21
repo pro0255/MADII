@@ -2,4 +2,4 @@
 """
 Constant used in method for network construction. ..ε-radius based method
 """
-EPSILON = 3
+EPSILON = 1 

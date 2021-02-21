@@ -15,6 +15,6 @@ def radius_knn_combination(distance_matrix, epsilon, k, verbose=False):
     if verbose:
         print(distance_matrix)
 
-    adj_matrix = np.ones(shape=(size,size)) #symetric matrix
+    adj_matrix = np.zeros(shape=(size, size)) #symetric matrix
     adj_matrix = radius_based_logic(adj_matrix, distance_matrix, epsilon)
     return nearest_neighbors_logic(adj_matrix, distance_matrix, epsilon)
