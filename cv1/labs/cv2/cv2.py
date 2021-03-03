@@ -5,16 +5,18 @@ from labs.cv2.CONSTANTS import NUMBER_OF_VERTICIES
 import networkx as nx
 from labs.cv2 import CONSTANTS 
 from constants.PATH_TO_OUTPUTS import PATH_TO_OUTPUTS
+from old_labs.graph.printer.GraphInspectionPrinter import write_graph_inspection_to_file
+from old_labs.graph.GraphProperties import make_graph_inspection
 
+
+analysis = False
 
 
 def cv2():
-
-
-
     holme_kim_dic = holme_kim(CONSTANTS.n_0, CONSTANTS.TIMESTAMP, CONSTANTS.m_holme, CONSTANTS.P_t_holme)
     holme_kim_adj = create_from_dic_adj(holme_kim_dic)
     holme_kim_G = nx.from_numpy_matrix(holme_kim_adj)
+
     nx.write_gexf(holme_kim_G, f'{PATH_TO_OUTPUTS}cv2/holme_kim.gexf')
 
 
@@ -30,5 +32,12 @@ def cv2():
     bianconi_adj = create_from_dic_adj(bianconi_dic)
     bianconi_G = nx.from_numpy_matrix(bianconi_adj)
     nx.write_gexf(bianconi_G, f'{PATH_TO_OUTPUTS}cv2/bianconi.gexf')
+
+    if analysis:
+        holme_inspection = make_graph_inspection(holme_kim_adj)
+        write_graph_inspection_to_file(f'{PATH_TO_OUTPUTS}cv2/holme.txt', holme_inspection)
+        bianconi_inspection = make_graph_inspection(bianconi_adj)
+        write_graph_inspection_to_file(f'{PATH_TO_OUTPUTS}cv2/bianconi.txt', bianconi_inspection)
+
 
 

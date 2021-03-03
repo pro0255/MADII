@@ -51,16 +51,17 @@ def holme_kim(m_0, n, m, P_t):
 
 
 
-def select_m(list_verticies, m):
+def select_m(list_verticies, m, adding):
     res = []
     while len(res) < m:
         vertex = random.choice(list_verticies)
-        if vertex not in res:
+        if vertex not in res and vertex != adding:
             res.append(vertex)
     return res
 
 def pa_step(G, list_verticies, m, adding_index):
-    verticies = select_m(list_verticies, m)
+
+    verticies = select_m(list_verticies, m, adding_index)
     new_vertex = adding_index
     if new_vertex in G.keys():
         G[new_vertex] += verticies
