@@ -7,10 +7,8 @@ from constants.PATH_TO_OUTPUTS import PATH_TO_OUTPUTS
 
 
 def cv3():
-
-
     G_0 = nx.complete_graph(CONSTANTS.START_NODES)
-    link_selection_G = link_selection(G_0, CONSTANTS.TIMESTAMP)
+    link_selection_G = link_selection(G_0, CONSTANTS.TIMESTAMP,  CONSTANTS.INTERNAL_LINKS_P)
     nx.write_gexf(link_selection_G, f'{PATH_TO_OUTPUTS}cv3/link_selection.gexf')
 
 

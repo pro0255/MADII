@@ -7,8 +7,8 @@ from labs.cv4.cv4 import cv4
 
 # cv1()
 # cv2()
-# cv3()
-cv4()
+cv3()
+# cv4()
 
 
 
