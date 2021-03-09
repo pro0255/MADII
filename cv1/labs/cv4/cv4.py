@@ -3,6 +3,7 @@ import pandas as pd
 from constants.PATH_TO_DATASETS import KARATE_CLUB, PATH_TO_DATASETS
 from utils.models.AdjMatrix import AdjacencyMatrix
 from utils.create_similarity_matrix import create_similarity_matrix
+from utils.print_sim_matrix import print_sim_matrix
 
 def cv4():
     kc = pd.read_csv(f'{PATH_TO_DATASETS}{KARATE_CLUB}', ';')
@@ -17,5 +18,4 @@ def cv4():
     adj_matrix = AdjacencyMatrix(max_value, kc)
     numpy_matrix = adj_matrix.matrix
     sim_matrix = create_similarity_matrix(numpy_matrix)
-    print(sim_matrix)
-    input('Input to end cv4 completed ..')
+    print_sim_matrix(sim_matrix)
