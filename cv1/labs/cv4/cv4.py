@@ -15,9 +15,10 @@ from sklearn.cluster import AgglomerativeClustering
 
 
 
-sklearn = True
+
+sklearn = False
 resize = False
-size = 6
+size = 5
 
 
 def cv4():
@@ -37,6 +38,7 @@ def cv4():
         numpy_matrix = numpy_matrix[0:size, 0:size]
 
     sim_matrix = create_similarity_matrix(numpy_matrix)
+    
     if sklearn:
         res = AgglomerativeClustering(n_clusters=K, linkage=LINKAGE).fit_predict(sim_matrix)
         network_labels = {}
@@ -47,7 +49,7 @@ def cv4():
         nx.write_gexf(G, f'{PATH_TO_OUTPUTS}cv4/test_sklearn_{LINKAGE}.gexf')
 
 
-    # print_sim_matrix(sim_matrix)
+    print_sim_matrix(sim_matrix)
     matrix, clusters = hierarchical_clustering(sim_matrix)
 
     network_labels = {}
@@ -55,6 +57,8 @@ def cv4():
         for cluster_index, cluster in enumerate(clusters):
             if index in cluster:
                 network_labels[index] = {"hierarchical_cluster":cluster_index, "label": index+1}
+
+    print(network_labels)
     G = nx.from_numpy_matrix(numpy_matrix)
     nx.set_node_attributes(G, network_labels)
     nx.write_gexf(G, f'{PATH_TO_OUTPUTS}cv4/clusters_{LINKAGE}.gexf')

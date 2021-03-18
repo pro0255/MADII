@@ -12,6 +12,8 @@ from constants.EPSILON import EPSILON
 from constants.K import K
 import networkx as nx
 import matplotlib.pyplot as plt
+from utils.create_edges_csv import create_edges_csv
+from utils.save_matrix_to_file import save_matrix_to_file
 
 
 def cv1():
@@ -33,13 +35,28 @@ def cv1():
     G_combination = nx.from_numpy_matrix(adj_matrix_combination)
     # nx.set_node_attributes(G, network_labels)
 
+
+    create_edges_csv(G_radius, f'{PATH_TO_DATASETS}/radius{EPSILON}.csv')
+    create_edges_csv(G_knn, f'{PATH_TO_DATASETS}/knn{K}.csv')
+    create_edges_csv(G_combination, f'{PATH_TO_DATASETS}/combination{K},{EPSILON}.csv')
+
     # nx.draw(G_radius, with_labels=False)
     # plt.show()
+    # print(len(G_radius.nodes()))
+    # print(len(G_knn.nodes()))
+    # print(len(G_combination.nodes()))
 
 
     nx.write_gexf(G_radius, f'{PATH_TO_OUTPUTS}cv1/radius{EPSILON}.gexf')
     nx.write_gexf(G_knn, f'{PATH_TO_OUTPUTS}cv1/knn{K}.gexf')
     nx.write_gexf(G_combination, f'{PATH_TO_OUTPUTS}cv1/combination{K},{EPSILON}.gexf')
 
+    save_matrix_to_file(f'{PATH_TO_OUTPUTS}cv1/radius{EPSILON}.npy', adj_matrix_radius)
+    save_matrix_to_file(f'{PATH_TO_OUTPUTS}cv1/knn{K}.npy', adj_matrix_knn)
+    save_matrix_to_file(f'{PATH_TO_OUTPUTS}cv1/combination{K},{EPSILON}.npy',adj_matrix_combination)
+
+
+
     # nx.draw(G_knn, with_labels=False)
     # plt.show()
+
