@@ -16,13 +16,13 @@ KarateClub = "C:\\Users\\Vojta\\Desktop\\own\\university\\ing\\01\\madII\\datase
 
 KNN = "C:\\Users\\Vojta\\Desktop\\own\\university\\ing\\01\\madII\\datasets\\knn3.csv"
 
-radius = "C:\\Users\\Vojta\\Desktop\\own\\university\\ing\\01\\madII\\datasets\\radius1.csv"
+radius = "C:\\Users\\Vojta\\Desktop\\own\\university\\ing\\01\\madII\\datasets\\radius0.75.csv"
 
-combination = "C:\\Users\\Vojta\\Desktop\\own\\university\\ing\\01\\madII\\datasets\\combination3,1.csv"
+combination = "C:\\Users\\Vojta\\Desktop\\own\\university\\ing\\01\\madII\\datasets\\combination3,0.75.csv"
 
 
-output <- "C:\\Users\\Vojta\\Desktop\\own\\university\\ing\\01\\madII\\outputs\\cv5\\karateclub.csv"
-f <- KarateClub
+output <- "C:\\Users\\Vojta\\Desktop\\own\\university\\ing\\01\\madII\\outputs\\cv5\\combination.csv"
+f <- combination
 # nacteni dat do dataframu
 df <- read.csv2(f, header =TRUE, stringsAsFactors=F)
 dim(df)
@@ -46,23 +46,23 @@ c1 = cluster_fast_greedy(g)
 fast_greedy = cluster_fast_greedy(g)
 edge_betweenness = cluster_edge_betweenness(g)
 louvain = cluster_louvain(g)	
-optimal = cluster_optimal(g)	
+#optimal = cluster_optimal(g)	
 label_prop = cluster_label_prop(g)
 
 fast_greedy_membership <- membership(fast_greedy)
 edge_betweenness_membership <- membership(edge_betweenness)
 louvain_membership <- membership(louvain)
-optimal_membership <- membership(optimal)
+#optimal_membership <- membership(optimal)
 label_prop_membership <- membership(label_prop)
 
-
+print(fast_greedy_membership)
 
 emp.data <- data.frame(
-  fast_greedy = as.numeric(fast_greedy_membership),
-  edge_betweenness = as.numeric(edge_betweenness_membership),
-  louvain = as.numeric(louvain_membership),
- optimal = as.numeric(optimal_membership),
-  label_prop = as.numeric(label_prop_membership)
+  fast_greedy = fast_greedy_membership[],
+  edge_betweenness = edge_betweenness_membership[],
+  louvain = louvain_membership[],
+ #optimal = optimal_membership[],
+  label_prop = label_prop_membership[]
 )
 
 write.csv2(emp.data, file = output, row.names = TRUE)

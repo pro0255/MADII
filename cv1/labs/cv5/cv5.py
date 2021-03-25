@@ -51,17 +51,19 @@ def cv5():
     # print(len(data_raidus))
     # print(len(data_combination))
 
+
+    #Load data from data frame - cluster method results
     print_to(data_knn, f'{PATH_TO_OUTPUTS}/cv5/knn', create_types(data_knn))
     print_to(data_raidus, f'{PATH_TO_OUTPUTS}/cv5/radius', create_types(data_raidus))
     print_to(data_combination, f'{PATH_TO_OUTPUTS}/cv5/combination', create_types(data_raidus))
     print_to(data_kc, f'{PATH_TO_OUTPUTS}/cv5/karateclub', create_types(data_kc))
-    set_and_save(G_knn, data_knn, create_types(data_knn), 'knn')
-    set_and_save(G_radius, data_raidus, create_types(data_raidus), 'radius')
-    set_and_save(G_combination, data_combination, create_types(data_combination), 'combination')
+
+    # set_and_save(G_knn, data_knn, create_types(data_knn), 'knn')
+    # set_and_save(G_radius, data_raidus, create_types(data_raidus), 'radius')
+    # set_and_save(G_combination, data_combination, create_types(data_combination), 'combination')
 
 
 def print_to(data, filename, types):
-
     for t in types:
         arr = data.loc[:, t].values
         c_0 = Counter(arr)
