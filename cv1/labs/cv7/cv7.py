@@ -4,7 +4,7 @@ from constants.PATH_TO_OUTPUTS import PATH_TO_OUTPUTS
 import numpy as np
 import networkx as nx
 from labs.cv7.Performance import Performace
-from labs.cv7.CONSTANTS import JAC_T, CN_T, TEST, VERBOSE
+from labs.cv7.CONSTANTS import kc_JAC_T, kc_CN_T, TEST, VERBOSE, lem_JAC_T, lem_CN_T
 
 
 """
@@ -136,12 +136,12 @@ def apply_threshold(matrix, threshold):
     res = np.where(thresholded_matrix > threshold, 1, 0)
     return res
 
-def make_calculation(matrix):
+def make_calculation(matrix, cn_t, jac_t):
     cn_A = common_neighbors_matrix(matrix)
     jac_A = jaccard_matrix(matrix)
 
-    cn_A_thresholded = apply_threshold(cn_A, CN_T)
-    jac_A_thresholded = apply_threshold(jac_A, JAC_T)
+    cn_A_thresholded = apply_threshold(cn_A, cn_t)
+    jac_A_thresholded = apply_threshold(jac_A, jac_t)
 
 
     cn_conf_tuple = create_confusion_tuple(matrix, cn_A_thresholded)
@@ -175,11 +175,11 @@ def cv7():
 
 
     print('karate club'.upper())
-    make_calculation(kc_matrix)
+    make_calculation(kc_matrix, kc_CN_T, kc_JAC_T)
     print()
 
     print('lesmis'.upper())
-    make_calculation(lesmis_matrix)
+    make_calculation(lesmis_matrix, lem_CN_T, lem_JAC_T)
     print()
 
     # print(kc_matrix)
