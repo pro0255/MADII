@@ -19,7 +19,7 @@ path = f'{PATH_TO_OUTPUTS}/cv1/'
 
 
 
-def calculate_modularity_for_dataset(path, data, types, classes=None):
+def calculate_modularity_for_dataset(path, data, types, classes=None, minus=False):
     G = nx.read_gexf(path)
     graph_matrix = nx.to_numpy_matrix(G)
     m = len(G.edges())
@@ -34,7 +34,7 @@ def calculate_modularity_for_dataset(path, data, types, classes=None):
         results['class'] = Q_classes
 
     for t in types:
-        c_dic = create_dic_community(data, t)
+        c_dic = create_dic_community(data, t, minus)
         Q = calculate_modularity(c_dic, graph_matrix, m)
         results[t] = Q
     return results
@@ -66,6 +66,9 @@ def create_dic_community(data, t, minus=False):
             index -= 1
         res[index] = community_data[i] 
     return res
+
+
+
 
 # def run_commands(path, c_dic, type):
 #     print(type)
@@ -149,7 +152,12 @@ def cv6():
         # type = columns[3]
         # run_commands(kc_graph_path, create_dic_community(data_kc, type, True), type) #karateclub
 
+        res_kc = calculate_modularity_for_dataset(kc_graph_path, data_kc, [columns[1], columns[2], columns[3], columns[4], columns[5]], None, True)
 
+        print(res_kc)
+
+
+#columns = ['Id', 'fast_greedy', 'edge_betweenness', 'louvain', 'optimal', 'label_prop']
         res_knn = calculate_modularity_for_dataset(knn_graph_path, data_knn, [columns[1], columns[2]], classes)
         res_radius = calculate_modularity_for_dataset(radius_graph_path, data_raidus, [columns[1], columns[2]], classes)
         res_combination = calculate_modularity_for_dataset(combination_graph_path, data_combination, [columns[1], columns[2]], classes)
@@ -158,12 +166,14 @@ def cv6():
         df_knn = dict_to_df(res_knn)
         df_radius = dict_to_df(res_radius)
         df_combination = dict_to_df(res_combination)
+        df_kc = dict_to_df(res_kc)
+
 
 
         df_knn.to_csv(f'{PATH_TO_OUTPUTS}cv6/knn.csv', header=True, sep=';')
         df_radius.to_csv(f'{PATH_TO_OUTPUTS}cv6/radius.csv', header=True, sep=';')
         df_combination.to_csv(f'{PATH_TO_OUTPUTS}cv6/combination.csv', header=True, sep=';')
-
+        df_kc.to_csv(f'{PATH_TO_OUTPUTS}cv6/karateclub.csv', header=True, sep=';')
 
 
 
