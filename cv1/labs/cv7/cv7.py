@@ -4,7 +4,7 @@ from constants.PATH_TO_OUTPUTS import PATH_TO_OUTPUTS
 import numpy as np
 import networkx as nx
 from labs.cv7.Performance import Performace
-from labs.cv7.CONSTANTS import kc_JAC_T, kc_CN_T, TEST, VERBOSE, lem_JAC_T, lem_CN_T
+from labs.cv7.CONSTANTS import kc_JAC_T, kc_CN_T, TEST, VERBOSE, lem_JAC_T, lem_CN_T, kc_PREFA_T, lem_PREFA_T
 
 
 """
@@ -66,6 +66,13 @@ def cn_calc(y, x):
     same = len(intersect)
     return same
 
+def prefa_calc(y, x):
+    k_y_w = np.argwhere(y > 0).flatten()
+    k_x_w = np.argwhere(x > 0).flatten()
+    k_y = len(k_y_w)
+    k_x = len(k_x_w)
+    return k_y * k_x
+
 def jaccard_calc(y, x):
     edges_y = np.where(y > 0)
     edges_x = np.where(x > 0)
@@ -97,6 +104,9 @@ def create_matrix_deps_on_method(matrix, method):
 def common_neighbors_matrix(matrix):
     return create_matrix_deps_on_method(matrix, cn_calc)
 
+
+def preferential_attachment_matrix(matrix):
+    return create_matrix_deps_on_method(matrix, prefa_calc)
 
 def jaccard_matrix(matrix):
     return create_matrix_deps_on_method(matrix, jaccard_calc)
@@ -136,16 +146,20 @@ def apply_threshold(matrix, threshold):
     res = np.where(thresholded_matrix > threshold, 1, 0)
     return res
 
-def make_calculation(matrix, cn_t, jac_t):
+def make_calculation(matrix, cn_t, jac_t, prefa_t):
     cn_A = common_neighbors_matrix(matrix)
     jac_A = jaccard_matrix(matrix)
-
+    prefa_A = preferential_attachment_matrix(matrix)
+    
     cn_A_thresholded = apply_threshold(cn_A, cn_t)
     jac_A_thresholded = apply_threshold(jac_A, jac_t)
+    prefa_A_thresholded = apply_threshold(prefa_A, prefa_t)
 
 
     cn_conf_tuple = create_confusion_tuple(matrix, cn_A_thresholded)
     jac_conf_tuple = create_confusion_tuple(matrix, jac_A_thresholded)
+    prefa_conf_tuple = create_confusion_tuple(matrix, prefa_A_thresholded)
+
 
     cn_perf = Performace("Common Neighbors (CN)")
     cn_perf.calculate(cn_conf_tuple)
@@ -153,9 +167,13 @@ def make_calculation(matrix, cn_t, jac_t):
     jac_perf = Performace('Jaccard Coefficient')
     jac_perf.calculate(jac_conf_tuple)
 
+    prefa_perf = Performace("Preferential Attachment")
+    prefa_perf.calculate(prefa_conf_tuple)
+
 
     print(jac_perf)
     print(cn_perf)
+    print(prefa_perf)
 
 
 
@@ -175,11 +193,11 @@ def cv7():
 
 
     print('karate club'.upper())
-    make_calculation(kc_matrix, kc_CN_T, kc_JAC_T)
+    make_calculation(kc_matrix, kc_CN_T, kc_JAC_T, kc_PREFA_T)
     print()
 
     print('lesmis'.upper())
-    make_calculation(lesmis_matrix, lem_CN_T, lem_JAC_T)
+    make_calculation(lesmis_matrix, lem_CN_T, lem_JAC_T, lem_PREFA_T)
     print()
 
     # print(kc_matrix)
