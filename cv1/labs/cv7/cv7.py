@@ -4,7 +4,7 @@ from constants.PATH_TO_OUTPUTS import PATH_TO_OUTPUTS
 import numpy as np
 import networkx as nx
 from labs.cv7.Performance import Performace
-from labs.cv7.CONSTANTS import kc_JAC_T, kc_CN_T, TEST, VERBOSE, lem_JAC_T, lem_CN_T, kc_PREFA_T, lem_PREFA_T
+from labs.cv7.CONSTANTS import kc_JAC_T, kc_CN_T, TEST, VERBOSE, lem_JAC_T, lem_CN_T, kc_PREFA_T, lem_PREFA_T, IGNORE_ZERO
 
 
 """
@@ -104,7 +104,6 @@ def create_matrix_deps_on_method(matrix, method):
 def common_neighbors_matrix(matrix):
     return create_matrix_deps_on_method(matrix, cn_calc)
 
-
 def preferential_attachment_matrix(matrix):
     return create_matrix_deps_on_method(matrix, prefa_calc)
 
@@ -112,17 +111,28 @@ def jaccard_matrix(matrix):
     return create_matrix_deps_on_method(matrix, jaccard_calc)
 
 
-def create_confusion_tuple(matrix, m_matrix):
+def create_confusion_tuple(matrix, m_matrix, predicted_matrix, t):
     true_positive = 0
     true_negative = 0
     false_positive = 0
     false_negative = 0
 
+    if VERBOSE:
+        pass
+        # print(pd.DataFrame(matrix))
+        # print(pd.DataFrame(m_matrix))
 
     for y in range(matrix.shape[0]):
         for x in range(y+1, matrix.shape[1]):
             available_value = matrix[y, x]
             predicted_value = m_matrix[y, x]
+
+            if IGNORE_ZERO and predicted_matrix is not None and predicted_matrix[y, x] == 0:
+                continue
+
+            # print(available_value, available_value==True)
+            # print(predicted_value, predicted_value==True)
+
             if available_value == True and predicted_value == True:
                 true_positive += 1
 
@@ -130,14 +140,14 @@ def create_confusion_tuple(matrix, m_matrix):
                 true_negative += 1
 
             if available_value == False and predicted_value == True:
-                true_negative += 1
+                false_positive += 1
 
             if available_value == True and predicted_value == False:
                 false_negative += 1
 
     res = (true_positive, true_negative, false_positive, false_negative)
     if VERBOSE:
-        print(f'\n\tTrue positive {true_positive}\n\tTrue negative {true_negative}\n\tFalse positive {false_positive}\n\tFalse negative {false_negative}\n')
+        print(f'{t}\n\n\n\tTrue positive {true_positive}\n\tTrue negative {true_negative}\n\tFalse positive {false_positive}\n\tFalse negative {false_negative}\n')
     return res
 
 
@@ -155,19 +165,25 @@ def make_calculation(matrix, cn_t, jac_t, prefa_t):
     jac_A_thresholded = apply_threshold(jac_A, jac_t)
     prefa_A_thresholded = apply_threshold(prefa_A, prefa_t)
 
+    cn_title = "Common Neighbors (CN)"
+    jac_title = "Jaccard Coefficient"
+    prefa_title = "Preferential Attachment"
 
-    cn_conf_tuple = create_confusion_tuple(matrix, cn_A_thresholded)
-    jac_conf_tuple = create_confusion_tuple(matrix, jac_A_thresholded)
-    prefa_conf_tuple = create_confusion_tuple(matrix, prefa_A_thresholded)
+    # print(pd.DataFrame(cn_A))
+    # print(pd.DataFrame(cn_A_thresholded))
+
+    cn_conf_tuple = create_confusion_tuple(matrix, cn_A_thresholded, cn_A, cn_title)
+    jac_conf_tuple = create_confusion_tuple(matrix, jac_A_thresholded, jac_A, jac_title)
+    prefa_conf_tuple = create_confusion_tuple(matrix, prefa_A_thresholded, None, prefa_title)
 
 
-    cn_perf = Performace("Common Neighbors (CN)")
+    cn_perf = Performace(cn_title)
     cn_perf.calculate(cn_conf_tuple)
 
-    jac_perf = Performace('Jaccard Coefficient')
+    jac_perf = Performace(jac_title)
     jac_perf.calculate(jac_conf_tuple)
 
-    prefa_perf = Performace("Preferential Attachment")
+    prefa_perf = Performace(prefa_title)
     prefa_perf.calculate(prefa_conf_tuple)
 
 

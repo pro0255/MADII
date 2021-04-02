@@ -19,12 +19,12 @@ from itertools import product
 ###
 # cv4()
 # cv5()
-cv6()
+# cv6()
 ###
 
 
 #M
-# cv7()
+cv7()
 
 
 
