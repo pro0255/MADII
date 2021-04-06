@@ -1,5 +1,8 @@
 import numpy as np
 import math
+import pandas as pd
+from constants.PATH_TO_OUTPUTS import PATH_TO_OUTPUTS 
+
 #KAPFTS1
 #KAPFTS2
 #KAPFTI1
@@ -12,29 +15,44 @@ class MultiLevelNet:
         self.multi_net = self.create_matrix(matrix, layers)
         self.actors = actors
         self.layers_name = layers_name
-        self.calculate()
+        df = self.calculate_res_dataframe()
         # print(self.multi_net)
 
-    def calculate(self):
+    def calculate_res_dataframe(self):
+        d_res = []
+        d_c_res = []
+        neighborhood_res = []
+        redudancy_res = []
+
         for i, a in enumerate(self.actors):
+            
             L = list(range(self.number_of_layers))
             d = self.degree_centrality(i, L)
             d_c = self.degree_deviation(i, L)
-            # neighbors = self.neighbors(i, L)
-            red = self.connective_redundancy(i, L)            
-            tmp = self.exclusive_neighborhood(i, [0])
-
-
-            print(f'{a} {d}')
-            print(f'{a} {d_c}')
-            # print(f'{a} {neighbors}')
-            print(f'{a} {red}')
-            print(f'{a} {tmp}')
+            neighborhood = self.neighborhood_centrality(i, L)
+            redudancy = self.connective_redundancy(i, L)            
 
 
 
+            d_res.append(d)
+            d_c_res.append(d_c)
+            neighborhood_res.append(neighborhood)
+            redudancy_res.append(round(redudancy, 3))
 
-            exit()
+
+            # print(f'{a} {d}')
+            # print(f'{a} {d_c}')
+            # # print(f'{a} {neighbors}')
+            # print(f'{a} {red}')
+            # print(f'{a} {tmp}')
+            # exit()
+
+        columns=['Degree deviation', 'Degree', 'Neighbors', 'Connective redudancy']
+        df = pd.DataFrame({columns[0]: d_c_res, columns[1]: d_res, columns[2]: neighborhood_res, columns[3]: redudancy_res},index=self.actors)
+        df.to_csv(f'{PATH_TO_OUTPUTS}cv8/multilayer.csv', sep=';')
+
+
+
 
     def create_matrix(self, matrix, layers):
         full_size = len(matrix)
