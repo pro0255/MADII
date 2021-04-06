@@ -22,6 +22,11 @@ def cv8():
     tailor_path = f'{PATH_TO_DATASETS}ml/tailor/' 
     tailor_matrix_path = f'{tailor_path}matrix.txt'
     tailor_labels_path = f'{tailor_path}labels.txt'
+    tailor_layer_labels_path = f'{tailor_path}layer_names.txt'
+
     matrix = np.loadtxt(tailor_matrix_path)
+    
     labels = read_labels(tailor_labels_path)
-    ml_net = MultiLevelNet(matrix, labels, LAYERS)
+    layer_labels = read_labels(tailor_layer_labels_path)
+
+    ml_net = MultiLevelNet(matrix, labels, LAYERS, layer_labels)
