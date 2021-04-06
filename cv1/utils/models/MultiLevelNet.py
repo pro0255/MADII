@@ -6,9 +6,11 @@ import numpy as np
 #KAPFTI2
 
 class MultiLevelNet:
-    def __init__(self, matrix, labels, layers):
+    def __init__(self, matrix, actors, layers, layers_name = None):
         size = int(len(matrix) / layers)
         self.multi_net = self.create_matrix(matrix, layers)
+        self.actors = actors
+        self.layers_name = layers_name
         # print(self.multi_net)
 
 
@@ -26,6 +28,28 @@ class MultiLevelNet:
             raise Exception("Preprocessing was not correct")
 
         return metricies
+
+    def degree_centrality(self):
+        pass
+
+    def degree_deviation(self):
+        pass
+
+    def neighbors(self):
+        pass
+
+    def neighborhood_centrality(self):
+        pass
+
+    def connective_redundancy(self):
+        pass
+
+    def exclusive_neighborhood(self):
+        pass
+
+    
+
+    
 
 
 
