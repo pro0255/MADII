@@ -19,7 +19,7 @@ class MultiLevelNet:
         self.aindex2actor = {i:actors[i] for i in range(len(actors))}
         self.layers_name = layers_name
         if calculate:
-            df = self.calculate_res_dataframe()
+            self.df = self.calculate_res_dataframe()
         # print(self.multi_net)
 
     def calculate_res_dataframe(self):
@@ -39,7 +39,7 @@ class MultiLevelNet:
 
 
             d_res.append(d)
-            d_c_res.append(d_c)
+            d_c_res.append(round(d_c, 3))
             neighborhood_res.append(neighborhood)
             redudancy_res.append(round(redudancy, 3))
 
@@ -54,6 +54,7 @@ class MultiLevelNet:
         columns=['Degree deviation', 'Degree', 'Neighbors', 'Connective redudancy']
         df = pd.DataFrame({columns[0]: d_c_res, columns[1]: d_res, columns[2]: neighborhood_res, columns[3]: redudancy_res},index=self.actors)
         df.to_csv(f'{PATH_TO_OUTPUTS}cv8/multilayer.csv', sep=';')
+        return df
 
 
 
@@ -141,6 +142,8 @@ class MultiLevelNet:
         current_vertex = v_start #actor
         current_layer = l_start
 
+
+     
         for step in range(number_of_steps):
 
             f = (current_vertex, current_layer)
@@ -163,21 +166,36 @@ class MultiLevelNet:
 
             history.append((f, t))
         
-
         return history
 
 
     def resolve_ava_layers(self, actor_index):
         return self.generate_all()
 
+
+    def occupation_centrality(self, walks, number_of_times = NUMBER_OF_TIMES):
+        occupation_centrality_res = {actor_i: 0 for actor_i in walks.keys()}
+        
+        for actor_i in walks.keys():
+            init_actor_walks = walks[actor_i]
+            for walk_history in init_actor_walks:
+                start = walk_history[0][0][0]
+                end = walk_history[-1][1][0]
+                occupation_centrality_res[end] += 1
+
+
+
+
+        calculated = {actor_i:(occupation_centrality_res[actor_i]/(number_of_times*len(list(walks.keys())))) for actor_i, times in occupation_centrality_res.items()}
+
+        return occupation_centrality_res, calculated
+
+
     def make_random_walks(self, number_of_steps = NUMBER_OF_STEPS, number_of_times = NUMBER_OF_TIMES):
-
-        # actors = list(range(len(self.actors)))
-        actors = [0]
-
+        actors = list(range(len(self.actors)))
+        # actors = [0]
         # print(actors)
         walks = {}
-
         for actor_index in actors:
             walks[actor_index] = []
             layers_to_start = self.resolve_ava_layers(actor_index)
@@ -186,8 +204,7 @@ class MultiLevelNet:
                 random_walk_history = self.random_walk(actor_index, start_layer, layers_to_start, number_of_steps)
                 walks[actor_index].append(random_walk_history)
 
-
-        print(len(walks[0]))
+        return self.occupation_centrality(walks)
 
 
 

@@ -2,7 +2,7 @@ from constants.PATH_TO_DATASETS import PATH_TO_DATASETS
 import numpy as np
 import pandas as pd
 from utils.models.MultiLevelNet import MultiLevelNet
-from labs.cv9.CONSTANTS import NUMBER_OF_STEPS
+from labs.cv9.CONSTANTS import NUMBER_OF_STEPS, NUMBER_OF_TIMES
 
 
 def read_labels(name):
@@ -29,8 +29,19 @@ def cv9():
     labels = read_labels(tailor_labels_path)
     layer_labels = read_labels(tailor_layer_labels_path)
 
-    ml_net = MultiLevelNet(matrix, labels, LAYERS, layer_labels)
+    ml_net = MultiLevelNet(matrix, labels, LAYERS, layer_labels, True)
 
     # ml_net.flattening()
 
-    ml_net.make_random_walks()
+    times, o_c = ml_net.make_random_walks()
+
+
+    ml_net.df[f'Times[{NUMBER_OF_TIMES}]Steps[{NUMBER_OF_STEPS}]'] = list(times.values())
+    ml_net.df[f'Occupation centrality'] = list(o_c.values())
+
+
+    p = np.sum(list(o_c.values()))
+    print(f'Prob = {p}')
+
+    print(ml_net.df)
+
