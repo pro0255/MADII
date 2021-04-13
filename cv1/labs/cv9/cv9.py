@@ -2,6 +2,7 @@ from constants.PATH_TO_DATASETS import PATH_TO_DATASETS
 import numpy as np
 import pandas as pd
 from utils.models.MultiLevelNet import MultiLevelNet
+from labs.cv9.CONSTANTS import NUMBER_OF_STEPS
 
 
 def read_labels(name):
@@ -10,14 +11,13 @@ def read_labels(name):
         for line in f.readlines():
             labels.append(line.strip())
     return labels
-    
 
 
-def cv8():
-    #TODO: vypocitat miry sousedstvi, stupne, a relevance
-    #http://vlado.fmf.uni-lj.si/pub/networks/data/UciNet/UciData.htm
-    #ZACHE
-    #ZACHC
+
+
+
+
+def cv9():
     LAYERS = 4
     tailor_path = f'{PATH_TO_DATASETS}ml/tailor/' 
     tailor_matrix_path = f'{tailor_path}matrix.txt'
@@ -31,5 +31,6 @@ def cv8():
 
     ml_net = MultiLevelNet(matrix, labels, LAYERS, layer_labels)
 
+    # ml_net.flattening()
 
-    
+    ml_net.make_random_walks()

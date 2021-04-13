@@ -2,6 +2,8 @@ import numpy as np
 import math
 import pandas as pd
 from constants.PATH_TO_OUTPUTS import PATH_TO_OUTPUTS 
+from labs.cv9.CONSTANTS import NUMBER_OF_STEPS, NUMBER_OF_TIMES, MOVE_TO_LAYER
+import random
 
 #KAPFTS1
 #KAPFTS2
@@ -9,13 +11,15 @@ from constants.PATH_TO_OUTPUTS import PATH_TO_OUTPUTS
 #KAPFTI2
 
 class MultiLevelNet:
-    def __init__(self, matrix, actors, layers, layers_name = None):
+    def __init__(self, matrix, actors, layers, layers_name = None, calculate=False):
         size = int(len(matrix) / layers)
         self.number_of_layers = layers
         self.multi_net = self.create_matrix(matrix, layers)
         self.actors = actors
+        self.aindex2actor = {i:actors[i] for i in range(len(actors))}
         self.layers_name = layers_name
-        df = self.calculate_res_dataframe()
+        if calculate:
+            df = self.calculate_res_dataframe()
         # print(self.multi_net)
 
     def calculate_res_dataframe(self):
@@ -57,6 +61,8 @@ class MultiLevelNet:
     def create_matrix(self, matrix, layers):
         full_size = len(matrix)
         layer_size = int(full_size / layers)
+        self.layer_size = layer_size 
+
         metricies = np.zeros((layer_size, layer_size, layers))    
         for i in range(layers):            
             f = layer_size*i
@@ -76,7 +82,7 @@ class MultiLevelNet:
         return degree
 
     def degree_deviation(self, actor, L):
-        same = self.degree_centrality(actor, L)
+        same = self.degree_centrality(actor, L) / len(L)
         s = 0
         for l in L:
             l_c = self.degree_centrality(actor, [l])
@@ -102,7 +108,6 @@ class MultiLevelNet:
     def neighborhood_centrality(self, actor, L):
         return len(self.neighbors(actor, L))
 
-
     def connective_redundancy(self, actor, L):
         nom = self.neighborhood_centrality(actor, L)
         den = self.degree_centrality(actor, L)
@@ -120,6 +125,76 @@ class MultiLevelNet:
         second = self.neighbors(actor, list(res))
         xneighborhood = set(first).difference(set(second))
         return len(list(xneighborhood))
+
+
+    def flattening(self):
+        flat_net = np.zeros((self.layer_size, self.layer_size))
+        for x in range(self.layer_size):
+            for y in range(self.layer_size):
+                res = np.sum(self.multi_net[x, y, :])                
+                flat_net[x, y] = 1 if res > 0 else 0
+        print(pd.DataFrame(flat_net))
+
+
+    def random_walk(self, v_start, l_start, all_layers, number_of_steps):
+        history = [] #((v, l), (v, l)) ((from), (to))
+        current_vertex = v_start #actor
+        current_layer = l_start
+
+        for step in range(number_of_steps):
+
+            f = (current_vertex, current_layer)
+
+            n = list(self.neighbors(current_vertex, [current_layer]))
+            n.append(MOVE_TO_LAYER)
+            choice = random.choice(n)
+
+            if choice == MOVE_TO_LAYER:
+                rem_layers = list(filter(lambda x: x != current_layer, all_layers))
+                choice_layer = random.choice(rem_layers) 
+                current_layer = choice_layer
+                # print('move to another layer')
+            else:
+                current_vertex = choice
+                # print('move to another vertex')
+            # print(n)
+
+            t = (current_vertex, current_layer)
+
+            history.append((f, t))
+        
+
+        return history
+
+
+    def resolve_ava_layers(self, actor_index):
+        return self.generate_all()
+
+    def make_random_walks(self, number_of_steps = NUMBER_OF_STEPS, number_of_times = NUMBER_OF_TIMES):
+
+        # actors = list(range(len(self.actors)))
+        actors = [0]
+
+        # print(actors)
+        walks = {}
+
+        for actor_index in actors:
+            walks[actor_index] = []
+            layers_to_start = self.resolve_ava_layers(actor_index)
+            for walk_index in range(number_of_times):
+                start_layer = random.choice(layers_to_start)
+                random_walk_history = self.random_walk(actor_index, start_layer, layers_to_start, number_of_steps)
+                walks[actor_index].append(random_walk_history)
+
+
+        print(len(walks[0]))
+
+
+
+
+
+
+
     
 
     
