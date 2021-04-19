@@ -43,5 +43,5 @@ def cv9():
     p = np.sum(list(o_c.values()))
     print(f'Prob = {p}')
 
-    print(ml_net.df)
+    ml_net.save_df(ml_net.df, 'multilayer.csv')
 

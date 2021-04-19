@@ -18,9 +18,59 @@ class MultiLevelNet:
         self.actors = actors
         self.aindex2actor = {i:actors[i] for i in range(len(actors))}
         self.layers_name = layers_name
-        if calculate:
-            self.df = self.calculate_res_dataframe()
+
+        self.df = self.calculate_res_dataframe()
+        self.layer_df = self.calculate_layer_properties()
+
+        self.save_df(self.df, 'multilayer.csv')
+        self.save_df(self.layer_df, 'layer.csv')
         # print(self.multi_net)
+
+    def calculate_layer_properties(self):
+        d_result = {}
+        for l in range(self.number_of_layers):
+            l_n = self.layers_name[l]
+            l_res = {}
+
+            for i, a in enumerate(self.actors):
+                l_a_d = self.degree_centrality(i, [l])
+                excl_neig = self.exclusive_neighborhood(i, [l])
+                excl_rel = self.exclusive_relevance(i, [l])
+                l_res[self.aindex2actor[i]] = {'Degree': round(l_a_d, 3), 'Exclu. Nei': round(excl_neig, 3), 'Exclu. Rele': round(excl_rel, 3)} 
+        
+            d_result[l_n] = l_res
+
+
+        properties = ['Degree','Exclu. Nei','Exclu. Rele']
+        header = pd.MultiIndex.from_product([self.layers_name,
+                                            properties],
+                                            names=['Layer name','Property'])
+
+
+        columns=['Degree deviation', 'Degree', 'Neighbors', 'Connective redudancy']
+        data = np.zeros((len(self.actors), 3 * self.number_of_layers))
+
+        for i, k_i in enumerate(d_result.keys()): #layers as key
+            for j, prop in enumerate(properties):
+                constructed_array = []
+                for _, k_j in enumerate(d_result[k_i].keys()): #actors as key
+                    value = d_result[k_i][k_j][prop]
+                    constructed_array.append(value)
+                position = i * len(properties) + j
+                data[:, position] = constructed_array    
+            
+        df = pd.DataFrame(data, columns=header, index=self.actors)
+        return df
+
+    def exclusive_relevance(self, actor, L):
+        nom = self.exclusive_neighborhood(actor, L)
+        den = self.neighborhood_centrality(actor,self.generate_all())
+        if den == 0:
+            return 0
+        return nom / den
+
+
+
 
     def calculate_res_dataframe(self):
         d_res = []
@@ -53,10 +103,10 @@ class MultiLevelNet:
 
         columns=['Degree deviation', 'Degree', 'Neighbors', 'Connective redudancy']
         df = pd.DataFrame({columns[0]: d_c_res, columns[1]: d_res, columns[2]: neighborhood_res, columns[3]: redudancy_res},index=self.actors)
-        df.to_csv(f'{PATH_TO_OUTPUTS}cv8/multilayer.csv', sep=';')
         return df
 
-
+    def save_df(self, df, name):
+        df.to_csv(f'{PATH_TO_OUTPUTS}cv8/{name}', sep=';')
 
 
     def create_matrix(self, matrix, layers):
