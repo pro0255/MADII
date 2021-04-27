@@ -11,13 +11,15 @@ import random
 #KAPFTI2
 
 class MultiLevelNet:
-    def __init__(self, matrix, actors, layers, layers_name = None, calculate=False):
+    def __init__(self, matrix, actors, layers, layers_name = None, calculate=False, lab=8):
+        self.lab = lab
         size = int(len(matrix) / layers)
         self.number_of_layers = layers
         self.multi_net = self.create_matrix(matrix, layers)
         self.actors = actors
         self.aindex2actor = {i:actors[i] for i in range(len(actors))}
         self.layers_name = layers_name
+        self.calculate = calculate #do nothing at all :D
 
         self.df = self.calculate_res_dataframe()
         self.layer_df = self.calculate_layer_properties()
@@ -106,7 +108,7 @@ class MultiLevelNet:
         return df
 
     def save_df(self, df, name):
-        df.to_csv(f'{PATH_TO_OUTPUTS}cv8/{name}', sep=';')
+        df.to_csv(f'{PATH_TO_OUTPUTS}cv{self.lab}/{name}', sep=';')
 
 
     def create_matrix(self, matrix, layers):

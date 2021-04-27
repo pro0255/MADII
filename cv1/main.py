@@ -8,6 +8,8 @@ from labs.cv6.cv6 import cv6
 from labs.cv7.cv7 import cv7
 from labs.cv8.cv8 import cv8
 from labs.cv9.cv9 import cv9
+from labs.cv10.cv10 import cv10
+from labs.cv11.cv11 import cv11
 from itertools import product
 
 #M
@@ -24,12 +26,18 @@ from itertools import product
 # cv6()
 ###
 
-
 #M
+###
 # cv7()
 # cv8()
-cv9()
+# cv9()
+###
 
+#O
+###
+# cv10()
+cv11()
+###
 
 
 
